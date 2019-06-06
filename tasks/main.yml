@@ -1,0 +1,88 @@
+---
+- name: Fail if missing prerequisites
+  when: ansible_service_mgr != "systemd"
+  fail:
+    msg: "SystemD is a prerequisite for consul to have it working nicely"
+
+- name: Install autocompletions
+  become: no
+  lineinfile:
+    path: "~/.bashrc"
+    line: "complete -C {{ consul_bin_dir }}/consul consul"
+    state: present
+  when: ansible_user_shell == '/bin/bash'
+
+- name: Ensure consul group exists
+  group:
+    name: "{{ consul_group }}"
+    state: "present"
+    system: yes
+
+- name: Create a consul service user and assign a key to him
+  user:
+    name: "{{ consul_user }}"
+    state: "present"
+    groups: "{{ consul_group }}"
+    home: "{{ consul_cfg_dir }}"
+    create_home: no
+    shell: "/bin/false"
+    system: yes
+
+- name: Create directories for consul
+  file:
+    dest: "{{ item }}"
+    state: "directory"
+    mode: 0755
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+  with_items:
+    - "{{ consul_cfg_dir }}"
+    - "{{ consul_data_dir }}"
+
+- name: Add a systemd service file for consul
+  template:
+    src: "consul.service.j2"
+    dest: "/etc/systemd/system/consul.service"
+    owner: "root"
+    group: "root"
+    mode: 0644
+  notify:
+    - "Reload systemd configs"
+    - "Restart consul"
+
+- name: Generate a consul encryption key
+  command: "/opt/consul/consul keygen"
+  register: consul_keygen_res
+  when: consul_encrypt_key == '<make-me-one>'
+  no_log: true
+
+- name: Set the consul_encrypt_key
+  set_fact:
+    consul_encrypt_key: "{{ consul_keygen_res.stdout }}"
+  when: consul_encrypt_key == '<make-me-one>'
+  no_log: true
+
+- name: Generate the encryption key
+  template:
+    src: "encrypt.json.j2"
+    dest: "{{ consul_cfg_dir }}/encrypt.json"
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: 0640
+  notify:
+    - "Restart consul"
+
+- name: Add a consul client configuraton file
+  template:
+    src: "consul.hcl.j2"
+    dest: "{{ consul_cfg_dir }}/000-base.hcl"
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: 0640
+  notify:
+    - "Restart consul"
+
+- name: Ensure consul is started
+  service:
+    name: consul
+    state: started

@@ -1,0 +1,46 @@
+galaxy_info:
+  role_name: consul_config
+  author: nioniosfr
+  description: A role to configure HashiCorp consul as a system service
+  license: MIT
+
+  min_ansible_version: 2.4
+
+  # If this a Container Enabled role, provide the minimum Ansible Container version.
+  # min_ansible_container_version:
+
+  platforms:
+    - name: EL
+      versions:
+        - 6
+        - 7
+    - name: Fedora
+      versions:
+        - 28
+        - 29
+    - name: Ubuntu
+      versions:
+        - trusty
+        - wily
+        - xenial
+        - yakkety
+        - xenial
+        - zesty
+        - artful
+        - bionic
+        - cosmic
+    - name: Debian
+      versions:
+        - jessie
+        - stretch
+
+  galaxy_tags:
+    - consul
+    - discovery
+    - networking
+    - configuration
+    - mesh
+    - system
+    - dns
+
+dependencies: []

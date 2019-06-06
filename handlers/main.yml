@@ -1,0 +1,25 @@
+---
+- name: Start consul
+  service:
+    name: "consul"
+    state: "started"
+    enabled: yes
+
+- name: Stop consul
+  service:
+    name: "consul"
+    state: "stopped"
+    enabled: yes
+
+- name: Restart consul
+  service:
+    name: "consul"
+    state: "restarted"
+
+- name: Reload systemd configs
+  systemd:
+    daemon_reload: yes
+    enabled: yes
+    name: "consul"
+    state: "started"
+  become: yes
