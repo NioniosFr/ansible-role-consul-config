@@ -1,10 +1,11 @@
 Ansible Role: Consul Configuration
 =========
 
-A role to configure [consule](https://www.consul.io) on Linux x86_64 based distro.
+A role to configure [consul](https://www.consul.io) on Linux x86_64 based distro.
 
-The role follows the [encryption](https://www.consul.io/docs/agent/encryption.html) recommendations for the gossip.
-protocol. TLS support for the gRPC protocol is not supported yet.
+The role follows the [encryption](https://www.consul.io/docs/agent/encryption.html) recommendations for the gossip
+protocol.
+TLS support for the gRPC protocol is not supported yet.
 
 Requirements
 ------------
@@ -18,7 +19,6 @@ Role Variables
 Default:
 
 ```yaml
----
 ---
 consul_encrypt_key: "<make-me-one>" # If not overriden, it will generate a new key each time.
 
@@ -57,12 +57,12 @@ Full example to install and configure `consul` to bind on all IP addresses (not-
 
 ```yaml
 ---
-- name: Install HashiCorp Vault
+- name: Install HashiCorp Consul
   hosts: all
   become: true
 
   vars:
-    consul_bin_dir: "/opt/vault"
+    consul_bin_dir: "/opt/consul"
 
   roles:
 
@@ -72,7 +72,7 @@ Full example to install and configure `consul` to bind on all IP addresses (not-
         hashicorp_app_version: "1.5.1"
         hashicorp_app_binary_dest: "{{ consul_bin_dir }}"
 
-    - role: ansible-role-consul-config
+    - role: ansible-role-consul-config # OR nioniosfr.consul_config
 ```
 
 License
