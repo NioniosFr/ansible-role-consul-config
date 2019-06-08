@@ -13,8 +13,9 @@ User={{ consul_user }}
 Group={{ consul_group }}
 
 ExecStart={{ consul_bin_dir }}/consul agent -config-dir={{ consul_cfg_dir }}/
-ExecReload={{ consul_bin_dir }}/consul reload
-
+# ExecReload={{ consul_bin_dir }}/consul reload
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGTERM
 KillMode=process
 Restart=on-failure
 StartLimitBurst=5
