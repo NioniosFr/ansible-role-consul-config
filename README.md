@@ -38,8 +38,6 @@ consul_datacenter: "dc1"
 consul_nodename: "{{ ansible_hostname |replace('.', '-') }}"
 consul_bind_addr: "{{ ansible_default_ipv4.address }}"
 consul_client_addr: "127.0.0.1 {{ consul_bind_addr }}"
-consul_retry_join: ""
-consul_join: ""
 consul_extra_values: "" # any extra configurations you may wish to pass to the main config file.
 ```
 

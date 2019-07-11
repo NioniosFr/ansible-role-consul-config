@@ -4,9 +4,7 @@ Documentation=https://www.consul.io/
 Requires=network-online.target
 After=network-online.target
 ConditionFileNotEmpty={{ consul_cfg_dir }}/000-base.hcl
-{% if consul_retry_join != '' %}
 Type=notify
-{% endif %}
 
 [Service]
 User={{ consul_user }}
